@@ -1,61 +1,106 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import "./Navbar.css"; // Importing the CSS file as requested
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import "./Navbar.css";
 
 const Navbar = () => {
-    // We use React State to handle the toggle logic instead of direct DOM manipulation
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    // State for mobile menu toggle
+    const [click, setClick] = useState(false);
+    // State for login status and user info
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    
+    const handleClick = () => setClick(!click);
 
-    // Defining handleClick before the return statement
-    const handleClick = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
+    const handleLogout = () => {
+        // 1. Clear Session Storage (Auth and User details)
+        sessionStorage.removeItem("auth-token");
+        sessionStorage.removeItem("name");
+        sessionStorage.removeItem("email");
+        sessionStorage.removeItem("phone");
+        
+        // 2. Clear Local Storage (Doctor and Review data)
+        localStorage.removeItem("doctorData");
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith("reviewFormData_")) {
+                localStorage.removeItem(key);
+            }
+        }
+
+        // 3. Reset State and Refresh Page
+        setIsLoggedIn(false);
+        setUsername("");
+        setEmail("");
+        window.location.reload();
+    }
+
+    useEffect(() => { 
+        const storedEmail = sessionStorage.getItem("email");
+
+        if (storedEmail) {
+            setIsLoggedIn(true);
+            setEmail(storedEmail);
+            // REQUIREMENT: Extract name from email (e.g., "jane" from "jane@gmail.com")
+            const extractedName = storedEmail.split('@')[0];
+            setUsername(extractedName);
+        }
+    }, []);
 
     return (
-        <nav>
-            {/* 1. Changed class to className */}
+        <nav className="navbar">
             <div className="nav__logo">
                 <Link to="/">
-                    StayHealthy 
-                    {/* SVG remains largely the same, but style must be an object */}
-                    <svg xmlns="http://www.w3.org/2000/svg" height="26" width="26" viewBox="0 0 1000 1000" style={{ fill: "#3685fb" }}>
-                        <title>Doctor With Stethoscope SVG icon</title>
-                        <g>
-                            <g>
-                                <path d="M499.8,10c91.7,0,166,74.3,166,166c0,91.7-74.3,166-166,166c-91.7,0-166-74.3-166-166C333.8,84.3,408.1,10,499.8,10z"></path>
-                                <path d="M499.8,522.8c71.2,0,129.1-58.7,129.1-129.1H370.6C370.6,464.1,428.6,522.8,499.8,522.8z"></path>
-                                <path d="M693.2,395c-0.7,94.9-70.3,173.7-160.8,188.9v155.9c0,80.3-60.7,150.8-140.8,155.3c-83,4.7-152.7-58.9-157.6-139.7c-22-12.8-35.6-38.5-30.3-66.7c4.7-25.1,25.5-45.6,50.8-49.9c39.7-6.7,74.1,23.7,74.1,62.1c0,23-12.3,43-30.7,54.1c4.7,45.4,45.1,80.4,92.6,76c44.6-4,77.2-44...."></path>
-                            </g>
-                        </g>
-                    </svg>
+                    StayHealthy <i style={{color:'#2190FF'}} className="fa fa-user-md"></i>
                 </Link>
                 <span>.</span>
             </div>
 
-            {/* 2. onClick triggers the handleClick function */}
+            {/* Mobile Menu Icon */}
             <div className="nav__icon" onClick={handleClick}>
-                {/* Dynamically change icon class based on state */}
-                <i className={`fa ${isMenuOpen ? "fa-times" : "fa-bars"}`}></i>
+                <i className={click ? "fa fa-times" : "fa fa-bars"}></i>
             </div>
 
-            {/* 3. Using template literals to toggle the 'active' class */}
-            <ul className={`nav__links ${isMenuOpen ? "active" : ""}`}>
+            <ul className={click ? 'nav__links active' : 'nav__links'}>
                 <li className="link">
                     <Link to="/">Home</Link>
                 </li>
                 <li className="link">
-                    <Link to="/appointments">Appointments</Link>
+                    <Link to="/search/doctors">Appointments</Link>
                 </li>
                 <li className="link">
-                    <Link to="/sign_up">
-                        <button className="btn1">Sign Up</button>
-                    </Link>
+                    <Link to="/healthblog">Health Blog</Link>
                 </li>
                 <li className="link">
-                    <Link to="/login">
-                        <button className="btn1">Login</button>
-                    </Link>
+                    <Link to="/reviews">Reviews</Link>
                 </li>
+
+                {/* CONDITIONAL RENDERING: Welcome Message + Logout vs Sign Up + Login */}
+                {isLoggedIn ? (
+                    <>
+                        <li className="link" style={{color:'#2190FF', fontWeight:'bold', alignSelf:'center'}}>
+                            Welcome, {username}
+                        </li>
+                        <li className="link">
+                            <button className="btn2" onClick={handleLogout}>
+                                Logout
+                            </button>
+                        </li>
+                    </>
+                ) : (
+                    <>
+                        <li className="link">
+                            <Link to="/signup">
+                                <button className="btn1">Sign Up</button>
+                            </Link>
+                        </li>
+                        <li className="link">
+                            <Link to="/login">
+                                <button className="btn1">Login</button>
+                            </Link>
+                        </li>
+                    </>
+                )}
             </ul>
         </nav>
     );

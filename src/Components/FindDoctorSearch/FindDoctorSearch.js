@@ -1,61 +1,54 @@
 import React, { useState } from 'react';
 import './FindDoctorSearch.css';
-import { useNavigate } from 'react-router-dom';
+import DoctorCard from '../DoctorCard/DoctorCard';
 
-const initSpecialities = [
-    'Cardiologist', 'General Physician', 'Dentist', 'Neurologist', 'Otolaryngologist'
+// Sample data for your doctors (This defines 'filteredDoctors' later)
+const initDoctors = [
+    { id: 1, name: "Dr. Jhon Doe", speciality: "Cardiologist", experience: 15, ratings: 4.5, profilePic: "https://pixabay.com/get/g48596634594c9f95d136868153c9e6c27801867_640.jpg" },
+    { id: 2, name: "Dr. Jane Smith", speciality: "Dermatologist", experience: 10, ratings: 4.8, profilePic: "https://pixabay.com/get/g08064b38d363b715693006d649987816003756_640.jpg" },
 ];
 
 const FindDoctorSearch = () => {
-    const [isHovering, setIsHovering] = useState(false);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [showSpecialities, setShowSpecialities] = useState(false);
-    const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredDoctors, setFilteredDoctors] = useState(initDoctors);
 
-    const handleSearch = (speciality) => {
-        setSearchTerm(speciality);
-        setShowSpecialities(false);
-        // Navigates to the search results page with the specialty as a query parameter
-        navigate(`/search/doctors?speciality=${speciality}`);
+    // This handles the search logic
+    const handleSearch = (e) => {
+        const query = e.target.value.toLowerCase();
+        setSearchQuery(query);
+        const filtered = initDoctors.filter(doc => 
+            doc.speciality.toLowerCase().includes(query)
+        );
+        setFilteredDoctors(filtered);
     };
 
     return (
-        <div className="finddoctor">
+        <div className="find-doctor-container">
             <center>
-                <h1>Find a doctor and Consult instantly</h1>
-                <div className="home-search-container">
-                    <div className="doctor-search-box">
-                        <input
-                            type="text"
-                            className="searchbar"
-                            placeholder="Search doctors, clinics, hospitals, etc."
-                            onFocus={() => setShowSpecialities(true)}
-                            onBlur={() => setShowSpecialities(false)}
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                        <div className="search-icon"><i className="fa fa-search"></i></div>
-                        
-                        {/* The suggestion list appears based on onFocus */}
-                        {showSpecialities && (
-                            <div className="speciality-list">
-                                {initSpecialities.map((speciality) => (
-                                    <div 
-                                        key={speciality} 
-                                        className="speciality-item"
-                                        onMouseDown={() => handleSearch(speciality)}
-                                    >
-                                        <i className="fa fa-search"></i>
-                                        <span>{speciality}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                <h2>Find a doctor and Consult remotely</h2>
+                <div className="search-box-area">
+                    <input 
+                        type="text" 
+                        className="search-input" 
+                        placeholder="Search doctors by speciality..." 
+                        value={searchQuery}
+                        onChange={handleSearch}
+                    />
                 </div>
             </center>
+
+            <div className="search-results">
+                {filteredDoctors.length > 0 ? (
+                    filteredDoctors.map(doctor => (
+                        <DoctorCard key={doctor.id} {...doctor} />
+                    ))
+                ) : (
+                    <p>No doctors found for this speciality.</p>
+                )}
+            </div>
         </div>
     );
 };
 
+// CRITICAL: This fixes the "Default Export" error!
 export default FindDoctorSearch;

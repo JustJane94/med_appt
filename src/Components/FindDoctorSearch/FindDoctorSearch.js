@@ -4,8 +4,38 @@ import DoctorCard from '../DoctorCard/DoctorCard';
 
 // Sample data for your doctors (This defines 'filteredDoctors' later)
 const initDoctors = [
-    { id: 1, name: "Dr. Jhon Doe", speciality: "Cardiologist", experience: 15, ratings: 4.5, profilePic: "https://pixabay.com/get/g48596634594c9f95d136868153c9e6c27801867_640.jpg" },
-    { id: 2, name: "Dr. Jane Smith", speciality: "Dermatologist", experience: 10, ratings: 4.8, profilePic: "https://pixabay.com/get/g08064b38d363b715693006d649987816003756_640.jpg" },
+    { 
+        id: 1, 
+        name: "Dr. Jhon Doe", 
+        speciality: "Cardiologist", 
+        experience: 15, 
+        ratings: 4.5, 
+        profilePic: "/doctor1.jpg" 
+    },
+    { 
+        id: 2, 
+        name: "Dr. Jane Smith", 
+        speciality: "Dermatologist", 
+        experience: 10, 
+        ratings: 4.8, 
+        profilePic: "/doctor2.jpg" 
+    },
+    { 
+        id: 3, 
+        name: "Dr. Okey Ugwueze", 
+        speciality: "Urologist", 
+        experience: 5, 
+        ratings: 4.0, 
+        profilePic: "/doctor3.jpg" // Check if this file exists in public/
+    },
+    { 
+        id: 4, // CHANGED from 3 to 4
+        name: "Dr. Jane Ukamaka", 
+        speciality: "Neurologist", 
+        experience: 3, 
+        ratings: 3.6, 
+        profilePic: "/doctor4.jpg" // CHANGED from doctor3 to doctor4
+    },
 ];
 
 const FindDoctorSearch = () => {

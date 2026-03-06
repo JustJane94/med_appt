@@ -4,7 +4,7 @@ import './DoctorCard.css';
 
 const DoctorCard = ({ name, speciality, experience, ratings, profilePic }) => {
   const [showForm, setShowForm] = useState(false);
-  const [appointment, setAppointment] = useState(null); // Track a single appointment
+  const [appointment, setAppointment] = useState(null); 
 
   const handleBooking = (appointmentData) => {
     setAppointment(appointmentData);
@@ -12,12 +12,13 @@ const DoctorCard = ({ name, speciality, experience, ratings, profilePic }) => {
   };
 
   const handleCancel = () => {
-    setAppointment(null); // Clears the appointment data
+    setAppointment(null); 
   };
 
   return (
     <div className="doctor-card-container">
       <div className="doctor-card-details-container">
+        {/* The Image is correctly placed here */}
         <div className="doctor-card-profile-image">
            <img src={profilePic} alt={name} className="doctor-img" />
         </div>
@@ -33,7 +34,6 @@ const DoctorCard = ({ name, speciality, experience, ratings, profilePic }) => {
       </div>
 
       <div className="doctor-card-options-container">
-        {/* CASE 1: Appointment is already booked */}
         {appointment ? (
           <div className="booked-info">
             <p><strong>Patient:</strong> {appointment.name}</p>
@@ -44,7 +44,6 @@ const DoctorCard = ({ name, speciality, experience, ratings, profilePic }) => {
             </button>
           </div>
         ) : (
-          /* CASE 2: No appointment yet - Show Button or Form */
           <>
             {!showForm ? (
               <button className="book-appointment-btn" onClick={() => setShowForm(true)}>
@@ -61,7 +60,7 @@ const DoctorCard = ({ name, speciality, experience, ratings, profilePic }) => {
         )}
       </div>
     </div>
-  );
+  ); // This is where the return ends
 };
 
 export default DoctorCard;

@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
-//import './BookingConsultation.css';
+// import './BookingConsultation.css';
 import FindDoctorSearch from './FindDoctorSearch/FindDoctorSearch';
-
 import DoctorCard from './DoctorCard/DoctorCard';
+
 const BookingConsultation = () => {
     const [allDoctors, setAllDoctors] = useState([]);
     const [filteredDoctors, setFilteredDoctors] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
 
-    // Mock data - In a real app, this would come from an API
     useEffect(() => {
         const fetchDoctors = () => {
             const data = [
@@ -37,7 +36,6 @@ const BookingConsultation = () => {
 
     return (
         <div className="booking-container">
-            {/* Exercise 1 Component */}
             <FindDoctorSearch onSearch={handleSearch} />
 
             <div className="search-results-section">
@@ -46,13 +44,21 @@ const BookingConsultation = () => {
                         <h2>{filteredDoctors.length} doctors available</h2>
                         <div className="doctor-grid">
                             {filteredDoctors.map(doctor => (
-                                <DoctorCard key={doctor.id} {...doctor} />
+                                <DoctorCard 
+                                    key={doctor.id} 
+                                    {...doctor} 
+                                    // ENSURE: The card knows how to save the data
+                                    onBook={(details) => {
+                                        localStorage.setItem('doctorData', JSON.stringify(doctor));
+                                        localStorage.setItem('appointmentData', JSON.stringify(details));
+                                    }}
+                                />
                             ))}
                         </div>
                     </>
                 ) : (
                     <div className="search-prompt">
-                        <p>Search by specialty to find the right doctor for you.</p>
+                        <h2>Search by specialty to find the right doctor for you.</h2>
                     </div>
                 )}
             </div>

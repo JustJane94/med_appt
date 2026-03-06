@@ -35,4 +35,4 @@ const Landing_Page = () => {
   );
 };
 
-export default Landing_Page; // Exporting the Landing_Page component to be used in other parts of the application
+export default Landing_Page;

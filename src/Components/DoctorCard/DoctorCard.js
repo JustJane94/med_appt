@@ -6,19 +6,34 @@ const DoctorCard = ({ name, speciality, experience, ratings, profilePic }) => {
   const [showForm, setShowForm] = useState(false);
   const [appointment, setAppointment] = useState(null); 
 
+  // 1. Logic for Booking
   const handleBooking = (appointmentData) => {
+    // Save to local storage so Notification component can see it
+    localStorage.setItem('doctorData', JSON.stringify({ name, speciality }));
+    localStorage.setItem('appointmentData', JSON.stringify(appointmentData));
+    
+    // Trigger the notification update immediately
+    window.dispatchEvent(new Event('storage'));
+
     setAppointment(appointmentData);
     setShowForm(false);
   };
 
+  // 2. Logic for Canceling
   const handleCancel = () => {
+    // Clear storage
+    localStorage.removeItem('appointmentData');
+    localStorage.removeItem('doctorData');
+    
+    // Inform the notification to disappear
+    window.dispatchEvent(new Event('storage'));
+
     setAppointment(null); 
   };
 
   return (
     <div className="doctor-card-container">
       <div className="doctor-card-details-container">
-        {/* The Image is correctly placed here */}
         <div className="doctor-card-profile-image">
            <img src={profilePic} alt={name} className="doctor-img" />
         </div>
@@ -60,7 +75,7 @@ const DoctorCard = ({ name, speciality, experience, ratings, profilePic }) => {
         )}
       </div>
     </div>
-  ); // This is where the return ends
+  );
 };
 
 export default DoctorCard;

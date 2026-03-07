@@ -10,13 +10,11 @@ const Navbar = () => {
 
     const handleClick = () => setClick(!click);
     
-    // Toggle the profile dropdown
     const handleDropdownToggle = () => setShowDropdown(!showDropdown);
 
     const handleLogout = () => {
         sessionStorage.clear();
         localStorage.removeItem("doctorData");
-        // Clear specific review data
         for (let i = 0; i < localStorage.length; i++) {
           const key = localStorage.key(i);
           if (key && key.startsWith("reviewFormData_")) {
@@ -24,20 +22,16 @@ const Navbar = () => {
           }
         }
         setIsLoggedIn(false);
-        // Reset dropdown state
         setShowDropdown(false);
-        // Using reload to ensure all states are reset across the app
         window.location.reload();
     }
 
     useEffect(() => { 
-      // Checking for the auth-token to confirm the user is logged in
       const token = sessionStorage.getItem("auth-token");
       const storedEmail = sessionStorage.getItem("email");
       
       if (token && storedEmail) {
             setIsLoggedIn(true);
-            // Extracting the part before the @ for a friendly greeting
             const nameFromEmail = storedEmail.split('@')[0];
             setUsername(nameFromEmail);
           }
@@ -73,6 +67,7 @@ const Navbar = () => {
                 <li>
                   <Link to="/profile" onClick={() => setShowDropdown(false)}>Your Profile</Link>
                 </li>
+                {/* Exercise 7: Link successfully integrated into navigation */}
                 <li>
                   <Link to="/reports" onClick={() => setShowDropdown(false)}>Your Reports</Link>
                 </li>

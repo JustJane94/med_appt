@@ -1,132 +1,114 @@
+/* Core Navigation Bar */
 nav {
-    padding: 1.5rem;
-    position: fixed;
-    top: 0%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
+    height: 80px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    background-color: #fff;
-    z-index: 1000;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.95); /* Slight transparency */
+    backdrop-filter: blur(10px); /* Modern blur effect */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 2000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Soft, professional shadow */
+    transition: all 0.3s ease;
 }
 
-.nav__logo {
-    font-size: 2rem;
-    font-weight: 600;
+/* Centered Container Wrapper */
+.nav__links, .nav__logo {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* Logo Styling */
+.nav__logo a {
+    font-size: 1.6rem;
+    font-weight: 700;
     color: #0d213f;
-    cursor: pointer;
+    text-decoration: none;
+    letter-spacing: -0.5px;
 }
 
-.nav__logo span {
-    color: #3685fb;
+.nav__logo i {
+    color: #2190FF;
+    margin-left: 5px;
 }
 
-.nav__icon {
-    display: none;
-    font-size: 2rem;
-    cursor: pointer;
-}
-
+/* Link Container */
 .nav__links {
     list-style: none;
     display: flex;
     align-items: center;
-    gap: 1rem;
-    font-size: 1rem;
-    font-weight: 500;
+    justify-content: flex-end;
+    gap: 2.5rem;
 }
 
+/* Individual Links */
 .link a {
-    padding: 0 1rem;
-    color: #0d213f;
     text-decoration: none;
-    transition: 0.3s;
+    color: #4a5568; /* Soft charcoal grey */
+    font-weight: 500;
+    font-size: 1rem;
+    transition: color 0.2s ease;
 }
 
 .link a:hover {
-    color: #3685fb;
+    color: #2190FF;
 }
 
+/* Professional Buttons */
 .btn1 {
-    border: 2px solid #3685fb;
-    background-color: white;
-    color: black;
-    border-radius: 50px;
-    padding: 5px 15px;
+    background-color: #2190FF;
+    color: white !important;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px; /* Modern rounded corners, not full pills */
+    font-weight: 600;
+    transition: transform 0.2s, background-color 0.2s;
     cursor: pointer;
 }
 
 .btn1:hover {
-    background-color: #3685fb;
-    color: white;
+    background-color: #1a74cc;
+    transform: translateY(-2px); /* Subtle lift on hover */
 }
 
-@media (max-width: 768px) {
-    .nav__icon {
-        display: block;
-    }
-    .nav__links {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background-color: #fff;
-    }
-    .nav__links.active {
-        display: flex;
-    }
-
-    .dropdown-menu {
-        position: static; /* This makes it push the items down instead of floating over them */
-        width: 100%;
-        box-shadow: none;
-        background-color: #f9f9f9; /* Light grey to distinguish it from the main menu */
-    }
-}
-
-/* Add this to Navbar.css */
-.dropdown {
-  position: relative;
-}
-
+/* Dropdown Menu Refinement */
 .dropdown-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: white;
-  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-  list-style: none;
-  padding: 10px;
-  border-radius: 4px;
-  z-index: 1000;
-  min-width: 150px;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    min-width: 200px;
+    padding: 8px 0;
+    border: 1px solid #edf2f7;
 }
 
 .dropdown-menu li {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
+    padding: 12px 20px;
+    transition: background 0.2s;
 }
 
-.dropdown-menu li:last-child {
-  border-bottom: none;
+.dropdown-menu li:hover {
+    background-color: #f7fafc;
 }
 
 .dropdown-menu a {
-  text-decoration: none;
-  color: #333;
-  display: block;
+    color: #2d3748;
+    font-size: 0.95rem;
 }
 
 .logout-dropdown-btn {
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: none;
-  color: #2190FF;
-  cursor: pointer;
-  padding: 0;
+    color: #e53e3e !important; /* Professional red */
+    font-weight: 600;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
 }

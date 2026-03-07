@@ -24,13 +24,18 @@ const Navbar = () => {
           }
         }
         setIsLoggedIn(false);
+        // Reset dropdown state
+        setShowDropdown(false);
         // Using reload to ensure all states are reset across the app
         window.location.reload();
     }
 
     useEffect(() => { 
+      // Checking for the auth-token to confirm the user is logged in
+      const token = sessionStorage.getItem("auth-token");
       const storedEmail = sessionStorage.getItem("email");
-      if (storedEmail) {
+      
+      if (token && storedEmail) {
             setIsLoggedIn(true);
             // Extracting the part before the @ for a friendly greeting
             const nameFromEmail = storedEmail.split('@')[0];
@@ -69,6 +74,9 @@ const Navbar = () => {
                   <Link to="/profile" onClick={() => setShowDropdown(false)}>Your Profile</Link>
                 </li>
                 <li>
+                  <Link to="/reports" onClick={() => setShowDropdown(false)}>Your Reports</Link>
+                </li>
+                <li>
                   <button className="btn2 logout-dropdown-btn" onClick={handleLogout}>
                     Logout
                   </button>
@@ -84,7 +92,6 @@ const Navbar = () => {
               </Link>
             </li>
             <li className="link">
-              {/* FIXED: Ensuring this points specifically to /login */}
               <Link to="/login">
                 <button className="btn1">Login</button>
               </Link>

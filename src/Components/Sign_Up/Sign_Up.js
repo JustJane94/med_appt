@@ -1,104 +1,96 @@
-// Following code has been commented with appropriate comments for your reference.
 import React, { useState } from 'react';
-import './Sign_Up.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { API_URL } from '../../config';
+import './Sign_Up.css';
 
-// Function component for Sign Up form
 const Sign_Up = () => {
-    // State variables using useState hook
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
-    const [showerr, setShowerr] = useState(''); // State to show error messages
-    const navigate = useNavigate(); // Navigation hook from react-router
+    const [showerr, setShowerr] = useState('');
 
-    // Function to handle form submission
+    const navigate = useNavigate();
+
     const register = async (e) => {
-        e.preventDefault(); // Prevent default form submission
+        e.preventDefault();
+        setShowerr("");
 
-        // API Call to register user
-        const response = await fetch(`${API_URL}/api/auth/register`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                name: name,
-                email: email,
-                password: password,
-                phone: phone,
-            }),
-        });
+        try {
+            const response = await fetch(`${API_URL}/api/auth/register`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: password,
+                    phone: phone,
+                }),
+            });
 
-        const json = await response.json(); // Parse the response JSON
+            const json = await response.json();
 
-        if (json.authtoken) {
-            // Store user data in session storage
-            sessionStorage.setItem("auth-token", json.authtoken);
-            sessionStorage.setItem("name", name);
-            sessionStorage.setItem("phone", phone);
-            sessionStorage.setItem("email", email);
-
-            // Redirect user to home page
-            navigate("/");
-            window.location.reload(); // Refresh the page
-        } else {
-            if (json.errors) {
-                for (const error of json.errors) {
-                    setShowerr(error.msg); // Show error messages
-                }
+            if (response.ok && json.authtoken) {
+                sessionStorage.setItem("auth-token", json.authtoken);
+                sessionStorage.setItem("name", name);
+                sessionStorage.setItem("email", email);
+                
+                navigate("/");
+                window.location.reload();
             } else {
-                setShowerr(json.error);
+                if (json.errors && Array.isArray(json.errors)) {
+                    setShowerr(json.errors[0].msg); 
+                } else if (json.error) {
+                    setShowerr(typeof json.error === 'object' ? json.error.msg : json.error);
+                } else {
+                    setShowerr("Registration failed. Please try again.");
+                }
             }
+        } catch (err) {
+            console.error("Signup Error:", err);
+            setShowerr("Server connection failed.");
         }
     };
 
-    // JSX to render the Sign Up form
     return (
-        <div className="container" style={{ marginTop: '5%' }}>
+        <div className="container" style={{marginTop:'5%'}}>
             <div className="signup-grid">
+                <div className="signup-text">
+                    <h1>Sign Up</h1>
+                    <p>Already a member? <Link to="/login" style={{color: '#2190FF'}}> Login</Link></p>
+                </div>
                 <div className="signup-form">
-                    <form method="POST" onSubmit={register}>
-                        {/* Email Field */}
+                    <form onSubmit={register}>
+                        <div className="form-group">
+                            <label htmlFor="name">Full Name</label>
+                            <input value={name} onChange={(e) => setName(e.target.value)} type="text" name="name" id="name" className="form-control" placeholder="Enter your name" required />
+                        </div>
                         <div className="form-group">
                             <label htmlFor="email">Email</label>
-                            <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" name="email" id="email" className="form-control" placeholder="Enter your email" />
-                            {showerr && <div className="err" style={{ color: 'red' }}>{showerr}</div>}
+                            <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" name="email" id="email" className="form-control" placeholder="Enter your email" required />
                         </div>
-
-                        {/* Name Field */}
                         <div className="form-group">
-                            <label htmlFor="name">Name</label>
-                            <input value={name} onChange={(e) => setName(e.target.value)} type="text" name="name" id="name" className="form-control" placeholder="Enter your name" />
+                            <label htmlFor="phone">Phone Number</label>
+                            <input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" name="phone" id="phone" className="form-control" placeholder="Enter your phone number" required />
                         </div>
-
-                        {/* Phone Field */}
-                        <div className="form-group">
-                            <label htmlFor="phone">Phone</label>
-                            <input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" name="phone" id="phone" className="form-control" placeholder="Enter your phone number" />
-                        </div>
-
-                        {/* Password Field */}
                         <div className="form-group">
                             <label htmlFor="password">Password</label>
-                            <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" name="password" id="password" className="form-control" placeholder="Enter your password" />
-                        </div>
-
-                        <div className="btn-group">
-                            <button type="submit" className="btn btn-primary">Submit</button>
+                            <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" name="password" id="password" className="form-control" placeholder="Enter your password" required />
                         </div>
                         
-                        <div className="login-link" style={{marginTop: '10px'}}>
-                            Already a member? <Link to="/login" style={{color: '#2190FF'}}>Login</Link>
+                        {showerr && <div className="err" style={{color: 'red', marginBottom: '10px'}}>{showerr}</div>}
+                        
+                        <div className="btn-group">
+                            <button type="submit" className="btn btn-primary">Sign Up</button>
+                            <button type="reset" className="btn btn-danger" onClick={() => {setName(''); setEmail(''); setPhone(''); setPassword(''); setShowerr('');}}>Reset</button>
                         </div>
                     </form>
                 </div>
             </div>
-            {/* Note: Sign up role is not stored in the database. */}
         </div>
     );
-};
+}
 
 export default Sign_Up;

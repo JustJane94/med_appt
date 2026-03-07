@@ -1,0 +1,19 @@
+.feedback-form {
+    margin-top: 20px;
+    padding: 15px;
+    border: 2px solid red; /* This makes the form visible and matches the lab requirement */
+    border-radius: 8px;
+    background-color: #fffafa;
+}
+
+.review-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.review-table th, .review-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}

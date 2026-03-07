@@ -6,13 +6,17 @@ const Navbar = () => {
     const [click, setClick] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [username, setUsername] = useState("");
-    
+    const [showDropdown, setShowDropdown] = useState(false);
+
     const handleClick = () => setClick(!click);
+    
+    // Toggle the profile dropdown
+    const handleDropdownToggle = () => setShowDropdown(!showDropdown);
 
     const handleLogout = () => {
-        sessionStorage.clear(); // Clears all auth data at once
+        sessionStorage.clear();
         localStorage.removeItem("doctorData");
-        // Remove review data
+        // Clear specific review data
         for (let i = 0; i < localStorage.length; i++) {
           const key = localStorage.key(i);
           if (key && key.startsWith("reviewFormData_")) {
@@ -20,6 +24,7 @@ const Navbar = () => {
           }
         }
         setIsLoggedIn(false);
+        // Using reload to ensure all states are reset across the app
         window.location.reload();
     }
 
@@ -27,7 +32,7 @@ const Navbar = () => {
       const storedEmail = sessionStorage.getItem("email");
       if (storedEmail) {
             setIsLoggedIn(true);
-            // EXTRACTION LOGIC: Get name before the '@' symbol
+            // Extracting the part before the @ for a friendly greeting
             const nameFromEmail = storedEmail.split('@')[0];
             setUsername(nameFromEmail);
           }
@@ -41,9 +46,11 @@ const Navbar = () => {
         </Link>
         <span>.</span>
       </div>
+      
       <div className="nav__icon" onClick={handleClick}>
         <i className={click ? "fa fa-times" : "fa fa-bars"}></i>
       </div>
+
       <ul className={click ? 'nav__links active' : 'nav__links'}>
         <li className="link"><Link to="/">Home</Link></li>
         <li className="link"><Link to="/search/doctors">Appointments</Link></li>
@@ -51,24 +58,36 @@ const Navbar = () => {
         <li className="link"><Link to="/reviews">Reviews</Link></li>
 
         {isLoggedIn ? (
-          <>
-            {/* Display username to the left of Logout button */}
-            <li className="link" style={{color:'#2190FF', fontWeight:'bold'}}>
-              Welcome, {username}
-            </li>
-            <li className="link">
-              <button className="btn2" onClick={handleLogout}>
-                Logout
-              </button>
-            </li>
-          </>
+          <li className="link dropdown" onClick={handleDropdownToggle}>
+            <span style={{color:'#2190FF', fontWeight:'bold', cursor:'pointer'}}>
+              Welcome, {username} <i className="fa fa-caret-down"></i>
+            </span>
+            
+            {showDropdown && (
+              <ul className="dropdown-menu">
+                <li>
+                  <Link to="/profile" onClick={() => setShowDropdown(false)}>Your Profile</Link>
+                </li>
+                <li>
+                  <button className="btn2 logout-dropdown-btn" onClick={handleLogout}>
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            )}
+          </li>
         ) : (
           <>
             <li className="link">
-              <Link to="/signup"><button className="btn1">Sign Up</button></Link>
+              <Link to="/signup">
+                <button className="btn1">Sign Up</button>
+              </Link>
             </li>
             <li className="link">
-              <Link to="/logout"><button className="btn1">Logout</button></Link>
+              {/* FIXED: Ensuring this points specifically to /login */}
+              <Link to="/login">
+                <button className="btn1">Login</button>
+              </Link>
             </li>
           </>
         )}

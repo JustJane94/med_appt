@@ -7,18 +7,19 @@ const Notification = ({ children }) => {
   const [appointmentData, setAppointmentData] = useState(null);
   const [showNotification, setShowNotification] = useState(true);
 
-  // Function to fetch data from storage
   const updateNotificationData = () => {
-    const storedUsername = sessionStorage.getItem('email');
-    if (storedUsername) {
+    const storedEmail = sessionStorage.getItem('email');
+    if (storedEmail) {
       setIsLoggedIn(true);
-      setUsername(storedUsername);
+      // REFINED: Extract name before '@' for a cleaner UI
+      const nameFromEmail = storedEmail.split('@')[0];
+      setUsername(nameFromEmail);
+    } else {
+      setIsLoggedIn(false);
     }
 
-    // Check for general appointment data first (Global Key)
+    // Check for appointment data
     const genericData = JSON.parse(localStorage.getItem('appointmentData'));
-    
-    // Fallback: check for doctor-specific data
     const storedDoctorData = JSON.parse(localStorage.getItem('doctorData'));
     const doctorSpecificData = storedDoctorData ? JSON.parse(localStorage.getItem(storedDoctorData.name)) : null;
 
@@ -32,15 +33,14 @@ const Notification = ({ children }) => {
   };
 
   useEffect(() => {
-    // Initial load
     updateNotificationData();
 
-    // Listen for changes in localStorage from OTHER pages/tabs
     const handleStorageChange = () => {
       updateNotificationData();
+      // Ensure notification pops up again if new data arrives
+      setShowNotification(true); 
     };
 
-    // Listen for custom events (if booking happens on the same page)
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener('appointmentUpdated', handleStorageChange);
 
@@ -57,7 +57,7 @@ const Notification = ({ children }) => {
       {isLoggedIn && appointmentData && showNotification && (
         <div className="appointment-card">
           <div className="appointment-card__content">
-            <h3 className="appointment-card__title">Appointment Details</h3>
+            <h3 className="appointment-card__title">Upcoming Appointment</h3>
             <p className="appointment-card__message">
               <strong>Patient:</strong> {username}
             </p>
@@ -71,7 +71,7 @@ const Notification = ({ children }) => {
               <strong>Time:</strong> {appointmentData.time || appointmentData.selectedSlot}
             </p>
             <button className="close-notification" onClick={() => setShowNotification(false)}>
-              Close Notification
+              Dismiss
             </button>
           </div>
         </div>

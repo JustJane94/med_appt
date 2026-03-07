@@ -8,6 +8,7 @@ import InstantConsultation from './Components/BookingConsultation';
 import FindDoctorSearch from './Components/FindDoctorSearch/FindDoctorSearch'; 
 import Notification from './Components/Notification/Notification';
 import ReviewForm from './Components/ReviewForm/ReviewForm'; 
+import ProfileCard from './Components/ProfileCard/ProfileCard';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
               
               {/* ADDED: The route for the ReviewForm component */}
               <Route path="/reviews" element={<ReviewForm />} />
+              <Route path="/profile" element={<ProfileCard />} />
               
             </Routes>
           </Notification>

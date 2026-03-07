@@ -51,6 +51,7 @@ const ReviewForm = () => {
           </tr>
         </thead>
         <tbody>
+          {/* Row 1 */}
           <tr>
             <td>1</td>
             <td>Dr. Michael Doe</td>
@@ -73,6 +74,48 @@ const ReviewForm = () => {
                 </div>
               )}
             </td>
+          </tr>
+
+          {/* Row 2 */}
+          <tr>
+            <td>2</td>
+            <td>Dr. John Kadiri</td>
+            <td>Urology</td>
+            <td>
+              <button className="btn-primary" onClick={handleButtonClick} disabled={isSubmitted}
+                style={{ backgroundColor: isSubmitted ? 'grey' : '#007bff' }}>
+                {isSubmitted ? 'Review Submitted' : 'Click Here'}
+              </button>
+            </td>
+            <td></td>
+          </tr>
+
+          {/* Row 3 */}
+          <tr>
+            <td>3</td>
+            <td>Dr. Sarah Jenkins</td>
+            <td>Dermatology</td>
+            <td>
+              <button className="btn-primary" onClick={handleButtonClick} disabled={isSubmitted}
+                style={{ backgroundColor: isSubmitted ? 'grey' : '#007bff' }}>
+                {isSubmitted ? 'Review Submitted' : 'Click Here'}
+              </button>
+            </td>
+            <td></td>
+          </tr>
+
+          {/* Row 4 */}
+          <tr>
+            <td>4</td>
+            <td>Dr. Amit Puri</td>
+            <td>Neurology</td>
+            <td>
+              <button className="btn-primary" onClick={handleButtonClick} disabled={isSubmitted}
+                style={{ backgroundColor: isSubmitted ? 'grey' : '#007bff' }}>
+                {isSubmitted ? 'Review Submitted' : 'Click Here'}
+              </button>
+            </td>
+            <td></td>
           </tr>
         </tbody>
       </table>
@@ -114,4 +157,4 @@ const ReviewForm = () => {
   );
 };
 
-export default ReviewForm;
+export default ReviewForm; // THIS LINE IS ESSENTIAL!

@@ -4,16 +4,22 @@ import './ReviewForm.css';
 const ReviewForm = () => {
   const [showForm, setShowForm] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [selectedDoctorId, setSelectedDoctorId] = useState(null); // Tracks which doctor is being reviewed
+  
+  // Stores reviews by doctor ID: { 1: {name, review, rating}, 2: {...} }
+  const [reviews, setReviews] = useState({});
+
   const [formData, setFormData] = useState({
     name: '',
     review: '',
     rating: 0
   });
-  const [submittedData, setSubmittedData] = useState(null);
 
-  const handleButtonClick = () => {
+  const handleButtonClick = (doctorId) => {
+    setSelectedDoctorId(doctorId);
     setShowForm(true);
+    // Reset form for the new review
+    setFormData({ name: '', review: '', rating: 0 });
   };
 
   const handleChange = (e) => {
@@ -26,15 +32,23 @@ const ReviewForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData.name && formData.review && formData.rating > 0) {
-      setSubmittedData(formData);
-      setIsSubmitted(true);
+    // SCENARIO 2: Validation check for name, review length, and rating
+    if (formData.name && formData.review.trim().length > 2 && formData.rating > 0) {
+      setReviews({ ...reviews, [selectedDoctorId]: formData });
+      
       setShowForm(false);
       setShowWarning(false);
     } else {
       setShowWarning(true);
     }
   };
+
+  const doctorData = [
+    { id: 1, name: "Dr. Michael Doe", speciality: "Cardiology" },
+    { id: 2, name: "Dr. John Kadiri", speciality: "Urology" },
+    { id: 3, name: "Dr. Sarah Jenkins", speciality: "Dermatology" },
+    { id: 4, name: "Dr. Amit Puri", speciality: "Neurology" }
+  ];
 
   return (
     <div className="review-form-container">
@@ -51,79 +65,38 @@ const ReviewForm = () => {
           </tr>
         </thead>
         <tbody>
-          {/* Row 1 */}
-          <tr>
-            <td>1</td>
-            <td>Dr. Michael Doe</td>
-            <td>Cardiology</td>
-            <td>
-              <button 
-                className="btn-primary" 
-                onClick={handleButtonClick} 
-                disabled={isSubmitted}
-                style={{ backgroundColor: isSubmitted ? 'grey' : '#007bff' }}
-              >
-                {isSubmitted ? 'Review Submitted' : 'Click Here'}
-              </button>
-            </td>
-            <td>
-              {submittedData && (
-                <div className="submitted-review">
-                  <p><strong>{submittedData.name}:</strong> {submittedData.review}</p>
-                  <p>Rating: {"★".repeat(submittedData.rating)}</p>
-                </div>
-              )}
-            </td>
-          </tr>
-
-          {/* Row 2 */}
-          <tr>
-            <td>2</td>
-            <td>Dr. John Kadiri</td>
-            <td>Urology</td>
-            <td>
-              <button className="btn-primary" onClick={handleButtonClick} disabled={isSubmitted}
-                style={{ backgroundColor: isSubmitted ? 'grey' : '#007bff' }}>
-                {isSubmitted ? 'Review Submitted' : 'Click Here'}
-              </button>
-            </td>
-            <td></td>
-          </tr>
-
-          {/* Row 3 */}
-          <tr>
-            <td>3</td>
-            <td>Dr. Sarah Jenkins</td>
-            <td>Dermatology</td>
-            <td>
-              <button className="btn-primary" onClick={handleButtonClick} disabled={isSubmitted}
-                style={{ backgroundColor: isSubmitted ? 'grey' : '#007bff' }}>
-                {isSubmitted ? 'Review Submitted' : 'Click Here'}
-              </button>
-            </td>
-            <td></td>
-          </tr>
-
-          {/* Row 4 */}
-          <tr>
-            <td>4</td>
-            <td>Dr. Amit Puri</td>
-            <td>Neurology</td>
-            <td>
-              <button className="btn-primary" onClick={handleButtonClick} disabled={isSubmitted}
-                style={{ backgroundColor: isSubmitted ? 'grey' : '#007bff' }}>
-                {isSubmitted ? 'Review Submitted' : 'Click Here'}
-              </button>
-            </td>
-            <td></td>
-          </tr>
+          {doctorData.map((doc) => (
+            <tr key={doc.id}>
+              <td>{doc.id}</td>
+              <td>{doc.name}</td>
+              <td>{doc.speciality}</td>
+              <td>
+                <button 
+                  className="btn-primary" 
+                  onClick={() => handleButtonClick(doc.id)} 
+                  disabled={!!reviews[doc.id]} // Button disables only for THIS doctor
+                  style={{ backgroundColor: reviews[doc.id] ? 'grey' : '#007bff' }}
+                >
+                  {reviews[doc.id] ? 'Review Submitted' : 'Click Here'}
+                </button>
+              </td>
+              <td>
+                {reviews[doc.id] && (
+                  <div className="submitted-review">
+                    <p><strong>{reviews[doc.id].name}:</strong> {reviews[doc.id].review}</p>
+                    <p>Rating: {"★".repeat(reviews[doc.id].rating)}</p>
+                  </div>
+                )}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
       {showForm && (
         <form className="feedback-form" onSubmit={handleSubmit}>
-          <h3>Feedback Form</h3>
-          {showWarning && <p className="warning" style={{color: 'red'}}>Please fill out all fields.</p>}
+          <h3>Feedback Form for {doctorData.find(d => d.id === selectedDoctorId)?.name}</h3>
+          {showWarning && <p className="warning" style={{color: 'red'}}>Please fill out all fields and provide a rating.</p>}
           
           <div>
             <label>Name:</label>
@@ -157,4 +130,4 @@ const ReviewForm = () => {
   );
 };
 
-export default ReviewForm; // THIS LINE IS ESSENTIAL!
+export default ReviewForm;

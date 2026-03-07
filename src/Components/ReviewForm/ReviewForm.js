@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './ReviewForm.css';
 
 const ReviewForm = () => {
-  const [showForm, setShowForm] = useState(true);
+  const [showForm, setShowForm] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -12,16 +12,23 @@ const ReviewForm = () => {
   });
   const [submittedData, setSubmittedData] = useState(null);
 
- 
+  const handleButtonClick = () => {
+    setShowForm(true);
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleRatingChange = (newRating) => {
+    setFormData({ ...formData, rating: newRating });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.name && formData.review && formData.rating > 0) {
       setSubmittedData(formData);
-      setIsSubmitted(true); // Disables the button logic
+      setIsSubmitted(true);
       setShowForm(false);
       setShowWarning(false);
     } else {
@@ -29,15 +36,10 @@ const ReviewForm = () => {
     }
   };
 
-
-  const handleButtonClick = () => {
-    console.log("Button clicked! Current state of showForm:", showForm);
-    setShowForm(true);
-};
-
   return (
     <div className="review-form-container">
       <h2>Give Your Feedback</h2>
+      
       <table className="review-table">
         <thead>
           <tr>
@@ -54,21 +56,20 @@ const ReviewForm = () => {
             <td>Dr. Michael Doe</td>
             <td>Cardiology</td>
             <td>
-              {/* Disable the button if feedback is already submitted */}
               <button 
                 className="btn-primary" 
                 onClick={handleButtonClick} 
                 disabled={isSubmitted}
-                style={{ backgroundColor: isSubmitted ? 'grey' : '' }}
+                style={{ backgroundColor: isSubmitted ? 'grey' : '#007bff' }}
               >
                 {isSubmitted ? 'Review Submitted' : 'Click Here'}
               </button>
             </td>
             <td>
-              {/* Display the submitted review text here */}
               {submittedData && (
                 <div className="submitted-review">
                   <p><strong>{submittedData.name}:</strong> {submittedData.review}</p>
+                  <p>Rating: {"★".repeat(submittedData.rating)}</p>
                 </div>
               )}
             </td>
@@ -83,24 +84,27 @@ const ReviewForm = () => {
           
           <div>
             <label>Name:</label>
-            <input type="text" name="name" value={formData.name} onChange={handleChange} />
+            <input type="text" name="name" value={formData.name} onChange={handleChange} required />
           </div>
 
           <div>
             <label>Review:</label>
-            <textarea name="review" value={formData.review} onChange={handleChange} />
+            <textarea name="review" value={formData.review} onChange={handleChange} required />
           </div>
 
-          <div>
+          <div className="star-rating">
             <label>Rating:</label>
-            <select name="rating" value={formData.rating} onChange={handleChange}>
-              <option value="0">Select Rating</option>
-              <option value="1">1 - Poor</option>
-              <option value="2">2 - Fair</option>
-              <option value="3">3 - Good</option>
-              <option value="4">4 - Very Good</option>
-              <option value="5">5 - Excellent</option>
-            </select>
+            <div className="stars">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span 
+                  key={star} 
+                  className={star <= formData.rating ? "star-active" : "star-inactive"}
+                  onClick={() => handleRatingChange(star)}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
           </div>
 
           <button type="submit" className="btn-submit">Submit</button>

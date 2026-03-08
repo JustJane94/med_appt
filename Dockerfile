@@ -1,18 +1,16 @@
-# 1. Use an official Node.js runtime as the base image
-FROM node:18
+FROM node:18-alpine
 
-# 2. Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
 
-# 3. Copy package files and install dependencies
+# Copy the server files (which includes the 'build' folder after npm run build)
 COPY server/package*.json ./
 RUN npm install
 
-# 4. Copy the rest of the server code (including the 'build' folder)
 COPY server/ .
 
-# 5. The app runs on port 8181 (as defined in your index.js)
+# Expose the port the app runs on
 EXPOSE 8181
 
-# 6. Start the server
+# Command to run the application
 CMD ["node", "index.js"]

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // Using the local address since we will use the host network trick
-const mongoURI = "mongodb://127.0.0.1:27017/stayhealthybeta1?directConnection=true";
+const mongoURI = "mongodb://root:1onTvzka8oAWBH8hrdGF5eK1@172.21.180.5:27017/stayhealthy?authSource=admin";
 
 const connectToMongo = async (retryCount = 0) => {
     try {
